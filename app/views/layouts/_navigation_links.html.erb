@@ -1,1 +1,4 @@
 <%# add navigation links to this file %>
+<% if signed_in? %>
+	<li><a href="<%= signout_path %>">Sign Out</a></li>
+<% end %>

@@ -13,7 +13,9 @@
       <%= render 'layouts/navigation' %>
     </header>
     <main role="main">
+      <% if flash[:errors] %>
        <%= render 'layouts/messages' %>
+      <% end %>
        <%= yield %>
     </main>
   </body>
