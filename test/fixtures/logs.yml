@@ -3,9 +3,11 @@
 one:
   task: MyString
   result: MyString
-  ended_at: 2014-02-03 12:56:04
+  ended_at: 2014-02-03 13:41:27
+  user_id: 
 
 two:
   task: MyString
   result: MyString
-  ended_at: 2014-02-03 12:56:04
+  ended_at: 2014-02-03 13:41:27
+  user_id: 

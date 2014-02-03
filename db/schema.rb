@@ -11,15 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140203205604) do
+ActiveRecord::Schema.define(version: 20140203214127) do
 
   create_table "logs", force: true do |t|
     t.string   "task"
     t.string   "result"
     t.datetime "ended_at"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "logs", ["user_id"], name: "index_logs_on_user_id"
 
   create_table "users", force: true do |t|
     t.string   "display_name"

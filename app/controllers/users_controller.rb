@@ -18,6 +18,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @log = Log.new
+    @logs = current_user.logs.all
   end
 
   def update

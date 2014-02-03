@@ -1,3 +1,23 @@
 <div class="container">
 	Hello <%= @user.display_name %>
 </div>
+
+<% if session[:working] %> 
+	<%= simple_form_for @log do |f| %>
+		<%= f.input :task, label: "What's your task?" %>
+		<%= f.button :submit, value: "Start Pomodoro" %>
+	<% end %>
+<% else %> 
+	<%= simple_form_for @log, url: '/logs/update' do |f| %>
+		<%= f.input :result, label: "How did you do?" %>
+		<%= f.button :submit, value: "Log results" %>
+	<% end %>
+<% end %>
+
+<% if @logs %>
+	<% @logs.each do |l| %>
+		<p><%= l.created_at.strftime('%B %e, %Y - %l:%M%P') %></p>
+		<p>Task : <%= l.task %></p>
+		<p>Result : <%= l.result %></p>
+	<% end %>
+<% end %>
