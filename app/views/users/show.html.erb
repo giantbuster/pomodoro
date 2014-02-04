@@ -1,51 +1,55 @@
 <div class="container">
-	Hello <%= @user.display_name %>
-	<div id="timer">
-		
+	<p>Hello <%= @user.display_name %></p>
+
+	<div id="test" style="visibility:hidden">Should be displayed on "Start Pomodoro" submit</div>
+	<div id="test2" style="visibility:hidden">Should be displayed on "Log results" submit</div>
+	<div id="start-work" style="display:<%=session[:state]==1 ? 'block' : 'none' %>">
+		<%= simple_form_for @log, remote: true do |f| %>
+			<%= f.input :task, label: "What's your task?"%>
+			<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>
+		<% end %>
 	</div>
-
-	<% if session[:working] %> 
-	<%= simple_form_for @log do |f| %>
-		<%= f.input :task, label: "What's your task?" %>
-		<%= f.button :submit, value: "Start Pomodoro", :id => 'start' %>
-	<% end %>
-	<% else %> 
-		<%= simple_form_for @log, url: '/logs/update' do |f| %>
-			<%= f.input :result, label: "How did you do?" %>
-			<%= f.button :submit, value: "Log results" %>
+	<div id="end-work" style="display:<%=session[:state]==2 ? 'block' : 'none' %>">
+		<%= simple_form_for @log, remote:true, url: '' do |f| %>
+			<div class="row">
+				<%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>
+			</div>
 		<% end %>
-	<% end %>
-
-	<% if @logs %>
-		<% @logs.each do |l| %>
-			<p><%= l.created_at.strftime('%B %e, %Y - %l:%M%P') %></p>
-			<p>Task : <%= l.task %></p>
-			<p>Result : <%= l.result %></p>
+	</div>
+	<div id="start-break" style="display:<%=session[:state]==3 ? 'block' : 'none' %>">
+		<%= simple_form_for @log, remote:true, url: '/logs/update' do |f| %>
+			<%= f.input :result, label: "How did you do?"%>
+			<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>
 		<% end %>
-	<% end %>
-
-	<script type="text/javascript">
-	$(document).ready(function(){
-
-		function startTimer(){
-			var time = 1200;
-			setInterval(function(){
-				time = decrement(time);
-				var minutes = Math.floor(time / 60);
-				var seconds = time % 60
-				$('#timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
-			}, 1000)
-		}
-
-		function decrement(seconds){
-			return seconds - 1;
-		};
-
-		$('#start').on('click', function(){
-			$('#timer').html('<h1>20:00</h1>', startTimer());
-		});
-		
-	});
-	</script>
+	</div>
+	<div id="end-break" style="display:<%=session[:state]==4 ? 'block' : 'none' %>">
+		<%= simple_form_for @log, remote:true, url: '' do |f| %>
+			<div class="row">
+				<%= f.button :submit, value: "Start work", class: "btn btn-danger col-sm-4 col-sm-offset-4" %>
+			</div>
+		<% end %>
+	</div>
+	<div class="clearfix"></div>
+	<h3 style="text-align: center"><small>Activity</small></h3>
+	<div id="feed">
+		<% if @logs %>
+			<% @logs.each do |l| %>
+				<div class="feed-item">
+					<div class="row">
+						<div class="col-sm-6 col-sm-offset-3">
+							<p class="text-muted"><%= l.created_at.strftime("%B %e, %Y - %l:%M%P") %></p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<p class="task-feed text-danger"><%= l.task %></p>
+						</div>
+						<div class="col-sm-6">
+							<p class="result-feed text-info"><%= l.result %></p>
+						</div>
+					</div>
+				</div>
+			<% end %>
+		<% end %>
+	</div>
 </div>
-

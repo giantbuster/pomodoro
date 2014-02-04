@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     @log = Log.new
-    @logs = current_user.logs.all
+    @logs = current_user.logs.order("id DESC").where("result IS NOT NULL").all
   end
 
   def update
