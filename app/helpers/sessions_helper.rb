@@ -2,6 +2,7 @@ module SessionsHelper
 
 	def sign_in(user)
 		session[:user_id] = user.id
+		session[:working] = true
 	end
 
 	def sign_out

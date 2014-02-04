@@ -3,7 +3,6 @@ class LogsController < ApplicationController
 		@log = Log.new(log_create_params)
 		if @log.save
 			current_user.logs << @log
-			session[:working] = false
 			redirect_to :back
 		else
 			render text: @log.errors.full_messages

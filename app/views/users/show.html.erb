@@ -1,23 +1,51 @@
 <div class="container">
 	Hello <%= @user.display_name %>
-</div>
+	<div id="timer">
+		
+	</div>
 
-<% if session[:working] %> 
+	<% if session[:working] %> 
 	<%= simple_form_for @log do |f| %>
 		<%= f.input :task, label: "What's your task?" %>
-		<%= f.button :submit, value: "Start Pomodoro" %>
+		<%= f.button :submit, value: "Start Pomodoro", :id => 'start' %>
 	<% end %>
-<% else %> 
-	<%= simple_form_for @log, url: '/logs/update' do |f| %>
-		<%= f.input :result, label: "How did you do?" %>
-		<%= f.button :submit, value: "Log results" %>
+	<% else %> 
+		<%= simple_form_for @log, url: '/logs/update' do |f| %>
+			<%= f.input :result, label: "How did you do?" %>
+			<%= f.button :submit, value: "Log results" %>
+		<% end %>
 	<% end %>
-<% end %>
 
-<% if @logs %>
-	<% @logs.each do |l| %>
-		<p><%= l.created_at.strftime('%B %e, %Y - %l:%M%P') %></p>
-		<p>Task : <%= l.task %></p>
-		<p>Result : <%= l.result %></p>
+	<% if @logs %>
+		<% @logs.each do |l| %>
+			<p><%= l.created_at.strftime('%B %e, %Y - %l:%M%P') %></p>
+			<p>Task : <%= l.task %></p>
+			<p>Result : <%= l.result %></p>
+		<% end %>
 	<% end %>
-<% end %>
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+		function startTimer(){
+			var time = 1200;
+			setInterval(function(){
+				time = decrement(time);
+				var minutes = Math.floor(time / 60);
+				var seconds = time % 60
+				$('#timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
+			}, 1000)
+		}
+
+		function decrement(seconds){
+			return seconds - 1;
+		};
+
+		$('#start').on('click', function(){
+			$('#timer').html('<h1>20:00</h1>', startTimer());
+		});
+		
+	});
+	</script>
+</div>
+
