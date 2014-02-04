@@ -1,4 +1,34 @@
-// $("#test").css('visibility', 'visible');
-$("#log_task").val('');
-$("#start-work").css('display', 'none');
-$("#start-break").css('display', 'block');
+//On 'Start Pomodoro' submit:
+
+//FOR DEVELOPMENT: Immediately display 'end work' button
+
+$('#timer').html('<h1>20:00</h1>', startTimer());
+$("#form-area").html('');
+
+function startTimer(){
+	var time = 60;
+	var timer = setInterval(function(){
+		time = decrement(time);
+		var minutes = Math.floor(time / 60);
+		var seconds = time % 60;
+		if(time == 0)
+		{
+			clearInterval(timer);
+			createTimesUpForm();
+			<% session[:state] = 3 %>
+		}
+		$('#timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
+	}, 1000)
+}
+
+function decrement(seconds){
+	return seconds - 1;
+};
+
+function createTimesUpForm(){
+	$("#form-area").html('<%= simple_form_for @log, remote:true, url: logs_update_ended_at_path, method: :post do |f| %>\
+						      <div class="row">\
+						 	      <%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>\
+						  	  </div>\
+					      <% end %>');
+}

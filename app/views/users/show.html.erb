@@ -1,36 +1,47 @@
 <div class="container">
 	<p>Hello <%= @user.display_name %></p>
 
-	<div id="test" style="visibility:hidden">Should be displayed on "Start Pomodoro" submit</div>
-	<div id="test2" style="visibility:hidden">Should be displayed on "Log results" submit</div>
-	<div id="start-work" style="display:<%=session[:state]==1 ? 'block' : 'none' %>">
-		<%= simple_form_for @log, remote: true do |f| %>
-			<%= f.input :task, label: "What's your task?"%>
-			<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>
-		<% end %>
-	</div>
-	<div id="end-work" style="display:<%=session[:state]==2 ? 'block' : 'none' %>">
-		<%= simple_form_for @log, remote:true, url: '' do |f| %>
-			<div class="row">
-				<%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>
-			</div>
-		<% end %>
-	</div>
-	<div id="start-break" style="display:<%=session[:state]==3 ? 'block' : 'none' %>">
-		<%= simple_form_for @log, remote:true, url: '/logs/update' do |f| %>
-			<%= f.input :result, label: "How did you do?"%>
-			<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>
-		<% end %>
-	</div>
-	<div id="end-break" style="display:<%=session[:state]==4 ? 'block' : 'none' %>">
-		<%= simple_form_for @log, remote:true, url: '' do |f| %>
-			<div class="row">
-				<%= f.button :submit, value: "Start work", class: "btn btn-danger col-sm-4 col-sm-offset-4" %>
-			</div>
+	<div id="timer"></div>
+
+	<div id="form-area">
+		<% if session[:state] == 1 %>
+			<!-- Display "What's your task?" form -->
+			<%= simple_form_for @log, remote: true do |f| %>
+				<%= f.input :task, label: "What's your task?"%>
+				<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>
+			<% end %>
+		<% elsif session[:state] == 2 %>
+			<!-- Display work timer -->
+		<% elsif session[:state] == 3 %>
+			<!-- Display button to end work session -->
+			<%= simple_form_for @log, remote:true, url: '/logs/update_ended_at' do |f| %>
+				<div class="row">
+					<%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>
+				</div>
+			<% end %>
+		<% elsif session[:state] == 4 %>
+			<!-- Display 'How did you do?' form -->
+			<%= simple_form_for @log, remote:true, url: '/logs/update_result' do |f| %>
+				<%= f.input :result, label: "How did you do?"%>
+				<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>
+			<% end %>
+		<% elsif session[:state] == 5 %>
+			<!-- Display break timer -->
+		<% elsif session[:state] == 6 %>
+			<!-- Display "Start work" button -->
+			<%= simple_form_for @log, remote:true, url: '/logs/start_work' do |f| %>
+				<div class="row">
+					<%= f.button :submit, value: "Start work", class: "btn btn-danger col-sm-4 col-sm-offset-4" %>
+				</div>
+			<% end %>
 		<% end %>
 	</div>
 	<div class="clearfix"></div>
-	<h3 style="text-align: center"><small>Activity</small></h3>
+	<div class="row">
+		<div class="col-sm-4 col-sm-offset-4 text-center">
+			<h3><small>Activity</small></h3>
+		</div>
+	</div>
 	<div id="feed">
 		<% if @logs %>
 			<% @logs.each do |l| %>

@@ -6,6 +6,7 @@ module SessionsHelper
 
 	def sign_out
 		session[:user_id] = nil
+		session[:state] = nil
 	end
 
 	def signed_in?

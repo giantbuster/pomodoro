@@ -18,9 +18,12 @@ Pomodoro::Application.routes.draw do
 
   resources :users, only: [:new, :create, :show, :edit, :update]
 
-  resources :logs, only: [:create, :update]
+  resources :logs, only: [:create]
 
-  post "logs/update" => "logs#update"
+  post "logs/update_ended_at" => "logs#update_ended_at"
+  post "logs/update_result" => "logs#update_result"
+  post "logs/start_work" => "logs#start_work"
+  # post "logs/update" => "logs#update"
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

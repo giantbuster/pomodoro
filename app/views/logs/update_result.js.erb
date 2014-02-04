@@ -1,0 +1,45 @@
+//On 'Log results' submit:
+
+//Display 'Start work' form
+
+//Update news feed
+<% l = Log.last %>
+$("#feed").prepend('<div class="feed-item">\
+						<p class="text-muted" style="font-size: 10pt; text-align: center"><%= l.created_at.strftime("%B %e, %Y - %l:%M%P") %></p>\
+						<div class="clearfix"></div>\
+						<div class="row">\
+							<div class="col-sm-6">\
+								<p class="task-feed text-danger"><%= l.task %></p>\
+							</div>\
+							<div class="col-sm-6">\
+								<p class="result-feed text-info"><%= l.result %></p>\
+							</div>\
+						</div>\
+					</div>');
+
+$('#timer').html('<h1>5:00</h1>', startTimer());
+$("#form-area").html('');
+
+function startTimer(){
+	var time = 60;
+	var timer = setInterval(function(){
+		time = decrement(time);
+		var minutes = Math.floor(time / 60);
+		var seconds = time % 60;
+		if(time == 0)
+		{
+			clearInterval(timer);
+			createTimesUpForm();
+			<% session[:state] = 6 %>
+		}
+		$('#timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
+	}, 1000)
+}
+
+function decrement(seconds){
+	return seconds - 1;
+};
+
+function createTimesUpForm(){
+	$("#form-area").html('<%= button_to "Start work", logs_start_work_path, remote: true, class: "btn btn-danger col-sm-4 col-sm-offset-4" %>');
+}

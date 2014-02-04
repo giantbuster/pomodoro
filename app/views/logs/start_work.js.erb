@@ -1,0 +1,7 @@
+//On 'Start work' submit:
+$('#timer').html('');
+
+$("#form-area").html('<%= simple_form_for @log, remote: true do |f| %>\
+						  <%= f.input :task, label: "What\'s your task?"%>\
+						  <%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>\
+			          <% end %>');

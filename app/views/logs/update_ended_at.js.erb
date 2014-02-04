@@ -1,0 +1,9 @@
+//On 'End Session' submit:
+$('#timer').html('');
+
+// Display 'How did you do?' form
+$("#form-area").append('aaa');
+$("#form-area").html('<%= simple_form_for @log, remote:true, url: logs_update_result_path, method: :post do |f| %>\
+		                  <%= f.input :result, label: "How did you do?"%>\
+		                  <%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>\
+	                  <% end %>');
