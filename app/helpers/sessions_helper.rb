@@ -1,7 +1,7 @@
 module SessionsHelper
-
 	def sign_in(user)
 		session[:user_id] = user.id
+		session[:state] = 1 if session[:state].nil?
 	end
 
 	def sign_out

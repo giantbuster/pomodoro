@@ -3,16 +3,25 @@ class LogsController < ApplicationController
 		@log = Log.new(log_create_params)
 		if @log.save
 			current_user.logs << @log
-			session[:working] = false
-			redirect_to :back
+			session[:state] = 3
+			respond_to do |format|
+				format.html { redirect_to :back }
+		        format.js
+			end
 		else
-			render text: @log.errors.full_messages
+			redirect_to :back
+			# respond_to do |format|
+			# 	format.html { redirect_to :back, flash: { errors:@log.errors.full_messages }}
+			# end
 		end
 	end
 	def update
 		@log = current_user.logs.last.update(log_update_params)
-		session[:working] = true
-		redirect_to :back
+		session[:state] = 1
+		respond_to do |format|
+			format.html { redirect_to :back }
+	        format.js
+		end
 	end
 
 	private
