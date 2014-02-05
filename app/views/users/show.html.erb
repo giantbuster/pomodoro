@@ -3,6 +3,8 @@
 
 	<div id="test" style="visibility:hidden">Should be displayed on "Start Pomodoro" submit</div>
 	<div id="test2" style="visibility:hidden">Should be displayed on "Log results" submit</div>
+	<div id="timer"></div>
+	<div id="ok"></div>
 	<div id="start-work" style="display:<%=session[:state]==1 ? 'block' : 'none' %>">
 		<%= simple_form_for @log, remote: true do |f| %>
 			<%= f.input :task, label: "What's your task?"%>

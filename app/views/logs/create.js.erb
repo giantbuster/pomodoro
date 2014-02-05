@@ -2,3 +2,32 @@
 $("#log_task").val('');
 $("#start-work").css('display', 'none');
 $("#start-break").css('display', 'block');
+$('#timer').html('<h1>20:00</h1>', startTimer());
+
+function startTimer(){
+	var time = 30;
+	var timer = setInterval(function(){
+		time = decrement(time);
+		var minutes = Math.floor(time / 60);
+		var seconds = time % 60;
+		if(time == 0)
+		{
+			clearInterval(timer);
+			createTimesUpForm();
+		}
+		$('#timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
+	}, 1000)
+}
+
+function decrement(seconds){
+	return seconds - 1;
+};
+
+function createTimesUpForm(){
+	$('#ok').html('<%= simple_form_for @log, remote:true, url: '' do |f| %>\
+			<div class="row">\
+				<%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>\
+			</div>\
+		<% end %>');
+}
+
