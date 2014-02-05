@@ -1,59 +1,63 @@
 <div class="container">
-	<p>Hello <%= @user.display_name %></p>
-	<div id="task-header"></div>
-	<div id="timer"></div>
+	<div class="work-area">
+		<p>Hello <%= @user.display_name %></p>
+		<div id="task-header"></div>
+		<div id="timer"></div>
 
-	<div id="form-area">
-		<% if session[:state] == 1 %>
-			<!-- Display "What's your task?" form -->
-			<%= simple_form_for @log, remote: true do |f| %>
-				<%= f.input :task, label: "What's your task?"%>
-				<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>
+		<div id="form-area">
+			<% if session[:state] == 1 %>
+				<!-- Display "What's your task?" form -->
+				<%= simple_form_for @log, remote: true do |f| %>
+					<%= f.input :task, label: "What's your task?"%>
+					<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>
+				<% end %>
+			<% elsif session[:state] == 2 %>
+				<!-- Display work timer -->
+				<p>We're in session state 2</p>
+				<% if current_user.logs.last.ended_at.nil? %>
+					<p>Timer has not been ended. On refresh, the 'End work' button will appear.</p>
+					<% session[:state] = 3 %>
+				<% end %>
+			<% elsif session[:state] == 3 %>
+				<!-- Display button to end work session -->
+				<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>
+				<h4 class="text-center text-info">Work time is over!</h4>
+				<%= simple_form_for @log, remote:true, url: '/logs/update_ended_at' do |f| %>
+					<div class="row">
+						<%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>
+					</div>
+				<% end %>
+			<% elsif session[:state] == 4 %>
+				<!-- Display 'How did you do?' form -->
+				<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>
+				<%= simple_form_for @log, remote:true, url: '/logs/update_result' do |f| %>
+					<%= f.input :result, label: "How did you do?"%>
+					<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>
+				<% end %>
+			<% elsif session[:state] == 5 %>
+				<!-- Display break timer -->
+				<p>We're in session state 5</p>
+				<p>On refresh, the 'Start work' button will appear.</p>
+				<% session[:state] = 6 %>
+			<% elsif session[:state] == 6 %>
+				<!-- Display "Start work" button -->
+				<%= simple_form_for @log, remote:true, url: '/logs/start_work' do |f| %>
+					<h4 class="text-center">Break time is over!</h4>
+					<div class="row">
+						<%= f.button :submit, value: "Start work", class: "btn btn-danger col-sm-4 col-sm-offset-4" %>
+					</div>
+				<% end %>
 			<% end %>
-		<% elsif session[:state] == 2 %>
-			<!-- Display work timer -->
-			<p>We're in session state 2</p>
-			<% if current_user.logs.last.ended_at.nil? %>
-				<p>Timer has not been ended. On refresh, the 'End work' button will appear.</p>
-				<% session[:state] = 3 %>
-			<% end %>
-		<% elsif session[:state] == 3 %>
-			<!-- Display button to end work session -->
-			<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>
-			<h4 class="text-center text-info">Work time is over!</h4>
-			<%= simple_form_for @log, remote:true, url: '/logs/update_ended_at' do |f| %>
-				<div class="row">
-					<%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>
-				</div>
-			<% end %>
-		<% elsif session[:state] == 4 %>
-			<!-- Display 'How did you do?' form -->
-			<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>
-			<%= simple_form_for @log, remote:true, url: '/logs/update_result' do |f| %>
-				<%= f.input :result, label: "How did you do?"%>
-				<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>
-			<% end %>
-		<% elsif session[:state] == 5 %>
-			<!-- Display break timer -->
-			<p>We're in session state 5</p>
-			<p>On refresh, the 'Start work' button will appear.</p>
-			<% session[:state] = 6 %>
-		<% elsif session[:state] == 6 %>
-			<!-- Display "Start work" button -->
-			<%= simple_form_for @log, remote:true, url: '/logs/start_work' do |f| %>
-				<h4 class="text-center">Break time is over!</h4>
-				<div class="row">
-					<%= f.button :submit, value: "Start work", class: "btn btn-danger col-sm-4 col-sm-offset-4" %>
-				</div>
-			<% end %>
-		<% end %>
-	</div>
-	<div class="clearfix"></div>
-	<div class="row text-center" id="counter">120</div>
-	<div class="row">
-		<div class="col-sm-4 col-sm-offset-4 text-center">
-			<h3><small>Activity</small></h3>
 		</div>
+		<div class="clearfix"></div>
+		<div class="row text-center" id="counter">
+			<% if session[:state] == 1 || session[:state] == 4 %>
+				120
+			<% end %>
+		</div>
+	</div>
+	<div class="row text-center">
+			<h3><small>Activity</small></h3>
 	</div>
 	<div id="feed">
 		<% if @logs %>
