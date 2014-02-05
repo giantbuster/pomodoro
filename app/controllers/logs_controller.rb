@@ -12,10 +12,7 @@ class LogsController < ApplicationController
 			end
 		else
 			redirect_to :back
-			# TODO: Display error msgs
-			# respond_to do |format|
-			# 	format.html { redirect_to :back, flash: { errors:@log.errors.full_messages }}
-			# end
+			# TODO: Display flash errors
 		end
 	end
 
@@ -37,12 +34,24 @@ class LogsController < ApplicationController
 	# State 4
 	# Process 'Log results' form
 	def update_result
-		# TODO: Check for blank input
-		@log = current_user.logs.last.update(log_update_result_params)
-		session[:state] = 5
-		respond_to do |format|
-			format.html { redirect_to :back }
-	        format.js
+		# TODO: Display flash errors
+		if log_update_result_params[:result].length==0
+			respond_to do |format|
+				# flash.now[:errors] = 'Result message cannot be blank'
+				format.html { redirect_to :back }
+			end
+		elsif log_update_result_params[:result].length>120
+			respond_to do |format|
+				# flash.now[:errors] = 'Result message is too long'
+				format.html { redirect_to :back }
+			end
+		else
+			@log = current_user.logs.last.update(log_update_result_params)
+			session[:state] = 5
+			respond_to do |format|
+				format.html { redirect_to :back }
+		        format.js
+		    end
 		end
 	end
 
