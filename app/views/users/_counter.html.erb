@@ -1,0 +1,13 @@
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#log_task').bind('input',function(){
+			$('#counter').text(120-$(this).val().length);
+			if(parseInt($('#counter').text()) < 0){
+				$('#counter').css('color', 'red');
+			}
+			else{
+				$('#counter').css('color', 'black');
+			}
+		});
+	})
+</script>
