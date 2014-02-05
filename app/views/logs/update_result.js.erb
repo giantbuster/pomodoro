@@ -1,27 +1,37 @@
 //On 'Log results' submit:
-
-//Display 'Start work' form
-
+//Clear task header
+$('#task-header').html('')
+//Clear form, update display msg
+$("#form-area").html('<h4 class="text-center text-info">Time for a break!</h4>');
 //Update news feed
-<% l = Log.last %>
-$("#feed").prepend('<div class="feed-item">\
-						<p class="text-muted" style="font-size: 10pt; text-align: center"><%= l.created_at.strftime("%B %e, %Y - %l:%M%P") %></p>\
-						<div class="clearfix"></div>\
+<% l = current_user.logs.last %>
+if ($("#today").length == 0){
+	$("#feed").prepend('<div class="row" id="today">\
+							<div class="col-sm-4 col-sm-offset-4 text-center">\
+								<p class="text-muted">Today</p>\
+							</div>\
+						</div>');
+}
+
+$('#today').after('<div class="feed-item">\
 						<div class="row">\
 							<div class="col-sm-6">\
+								<p class="text-muted"><%= l.created_at.strftime("%l:%M%P") %></p>\
 								<p class="task-feed text-danger"><%= l.task %></p>\
 							</div>\
 							<div class="col-sm-6">\
+								<p class="text-muted"><%= l.ended_at.strftime("%l:%M%P") %></p>\
 								<p class="result-feed text-info"><%= l.result %></p>\
 							</div>\
 						</div>\
+						<hr>\
 					</div>');
 
-$('#timer').html('<h1>5:00</h1>', startTimer());
-$("#form-area").html('');
+//Start break timer
+$('#timer').html('<h1>5:00</h1>', startBreakTimer());
 
-function startTimer(){
-	var time = 60;
+function startBreakTimer(){
+	var time = 5;
 	var timer = setInterval(function(){
 		time = decrement(time);
 		var minutes = Math.floor(time / 60);
@@ -29,8 +39,7 @@ function startTimer(){
 		if(time == 0)
 		{
 			clearInterval(timer);
-			createTimesUpForm();
-			<% session[:state] = 6 %>
+			createStartWorkForm();
 		}
 		$('#timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
 	}, 1000)
@@ -40,6 +49,6 @@ function decrement(seconds){
 	return seconds - 1;
 };
 
-function createTimesUpForm(){
-	$("#form-area").html('<%= button_to "Start work", logs_start_work_path, remote: true, class: "btn btn-danger col-sm-4 col-sm-offset-4" %>');
+function createStartWorkForm(){
+	$("#form-area").html('<h4 class="text-center">Break time is over!</h4><%= button_to "Start work", logs_start_work_path, remote: true, class: "btn btn-danger col-sm-4 col-sm-offset-4" %>');
 }
