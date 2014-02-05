@@ -1,7 +1,20 @@
 //On 'Start work' submit:
 $('#timer').html('');
+$("#counter").html('120');
 
 $("#form-area").html('<%= simple_form_for @log, remote: true do |f| %>\
 						  <%= f.input :task, label: "What\'s your task?"%>\
 						  <%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>\
 			          <% end %>');
+
+$(document).ready(function(){
+	$('#log_task').bind('input',function(){
+		$('#counter').text(120-$(this).val().length);
+		if(parseInt($('#counter').text()) < 0){
+			$('#counter').css('color', 'red');
+		}
+		else{
+			$('#counter').css('color', 'black');
+		}
+	});
+})

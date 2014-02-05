@@ -3,6 +3,7 @@
 <% task = current_user.logs.last.task %>
 $('#task-header').html('<h3 class="text-danger">Task : <%= task %></h3>')
 $("#form-area").html('');
+$("#counter").html('');
 
 //Start work timer
 $('#timer').html('<h1>20:00</h1>', startWorkTimer());

@@ -6,3 +6,16 @@ $("#form-area").html('<%= simple_form_for @log, remote:true, url: logs_update_re
 		                  <%= f.input :result, label: "How did you do?"%>\
 		                  <%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>\
 	                  <% end %>');
+$("#counter").html('120');
+
+$(document).ready(function(){
+	$('#log_result').bind('input',function(){
+		$('#counter').text(120-$(this).val().length);
+		if(parseInt($('#counter').text()) < 0){
+			$('#counter').css('color', 'red');
+		}
+		else{
+			$('#counter').css('color', 'black');
+		}
+	});
+})
