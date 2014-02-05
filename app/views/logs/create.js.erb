@@ -1,11 +1,14 @@
-// $("#test").css('visibility', 'visible');
-$("#log_task").val('');
-$("#start-work").css('display', 'none');
-$("#start-break").css('display', 'block');
-$('#timer').html('<h1>20:00</h1>', startTimer());
+//On 'Start Pomodoro' submit:
 
-function startTimer(){
-	var time = 30;
+<% task = current_user.logs.last.task %>
+$('#task-header').html('<h3 class="text-danger">Task : <%= task %></h3>')
+$("#form-area").html('');
+
+//Start work timer
+$('#timer').html('<h1>20:00</h1>', startWorkTimer());
+
+function startWorkTimer(){
+	var time = 5;
 	var timer = setInterval(function(){
 		time = decrement(time);
 		var minutes = Math.floor(time / 60);
@@ -13,7 +16,7 @@ function startTimer(){
 		if(time == 0)
 		{
 			clearInterval(timer);
-			createTimesUpForm();
+			createEndSessionForm();
 		}
 		$('#timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
 	}, 1000)
@@ -23,11 +26,13 @@ function decrement(seconds){
 	return seconds - 1;
 };
 
-function createTimesUpForm(){
-	$('#ok').html('<%= simple_form_for @log, remote:true, url: '' do |f| %>\
-			<div class="row">\
-				<%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>\
-			</div>\
-		<% end %>');
+
+function createEndSessionForm(){	
+	$("#form-area").html('<h4 class="text-center text-info">Work time is over!</h4>\
+						  <%= simple_form_for @log, remote:true, url: logs_update_ended_at_path, method: :post do |f| %>\
+						      <div class="row">\
+						 	      <%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>\
+						  	  </div>\
+					      <% end %>');
 }
 

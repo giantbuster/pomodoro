@@ -1,55 +1,87 @@
 <div class="container">
 	<p>Hello <%= @user.display_name %></p>
-
-	<div id="test" style="visibility:hidden">Should be displayed on "Start Pomodoro" submit</div>
-	<div id="test2" style="visibility:hidden">Should be displayed on "Log results" submit</div>
+	<div id="task-header"></div>
 	<div id="timer"></div>
-	<div id="ok"></div>
-	<div id="start-work" style="display:<%=session[:state]==1 ? 'block' : 'none' %>">
-		<%= simple_form_for @log, remote: true do |f| %>
-			<%= f.input :task, label: "What's your task?"%>
-			<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>
-		<% end %>
-	</div>
-	<div id="end-work" style="display:<%=session[:state]==2 ? 'block' : 'none' %>">
-		<%= simple_form_for @log, remote:true, url: '' do |f| %>
-			<div class="row">
-				<%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>
-			</div>
-		<% end %>
-	</div>
-	<div id="start-break" style="display:<%=session[:state]==3 ? 'block' : 'none' %>">
-		<%= simple_form_for @log, remote:true, url: '/logs/update' do |f| %>
-			<%= f.input :result, label: "How did you do?"%>
-			<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>
-		<% end %>
-	</div>
-	<div id="end-break" style="display:<%=session[:state]==4 ? 'block' : 'none' %>">
-		<%= simple_form_for @log, remote:true, url: '' do |f| %>
-			<div class="row">
-				<%= f.button :submit, value: "Start work", class: "btn btn-danger col-sm-4 col-sm-offset-4" %>
-			</div>
+
+	<div id="form-area">
+		<% if session[:state] == 1 %>
+			<!-- Display "What's your task?" form -->
+			<%= simple_form_for @log, remote: true do |f| %>
+				<%= f.input :task, label: "What's your task?"%>
+				<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>
+			<% end %>
+		<% elsif session[:state] == 2 %>
+			<!-- Display work timer -->
+			<p>We're in session state 2</p>
+			<% if current_user.logs.last.ended_at.nil? %>
+				<p>Timer has not been ended. On refresh, the 'End work' button will appear.</p>
+				<% session[:state] = 3 %>
+			<% end %>
+		<% elsif session[:state] == 3 %>
+			<!-- Display button to end work session -->
+			<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>
+			<h4 class="text-center text-info">Work time is over!</h4>
+			<%= simple_form_for @log, remote:true, url: '/logs/update_ended_at' do |f| %>
+				<div class="row">
+					<%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>
+				</div>
+			<% end %>
+		<% elsif session[:state] == 4 %>
+			<!-- Display 'How did you do?' form -->
+			<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>
+			<%= simple_form_for @log, remote:true, url: '/logs/update_result' do |f| %>
+				<%= f.input :result, label: "How did you do?"%>
+				<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>
+			<% end %>
+		<% elsif session[:state] == 5 %>
+			<!-- Display break timer -->
+			<p>We're in session state 5</p>
+			<p>On refresh, the 'Start work' button will appear.</p>
+			<% session[:state] = 6 %>
+		<% elsif session[:state] == 6 %>
+			<!-- Display "Start work" button -->
+			<%= simple_form_for @log, remote:true, url: '/logs/start_work' do |f| %>
+				<h4 class="text-center">Break time is over!</h4>
+				<div class="row">
+					<%= f.button :submit, value: "Start work", class: "btn btn-danger col-sm-4 col-sm-offset-4" %>
+				</div>
+			<% end %>
 		<% end %>
 	</div>
 	<div class="clearfix"></div>
-	<h3 style="text-align: center"><small>Activity</small></h3>
+	<div class="row">
+		<div class="col-sm-4 col-sm-offset-4 text-center">
+			<h3><small>Activity</small></h3>
+		</div>
+	</div>
 	<div id="feed">
 		<% if @logs %>
 			<% @logs.each do |l| %>
-				<div class="feed-item">
-					<div class="row">
-						<div class="col-sm-6 col-sm-offset-3">
-							<p class="text-muted"><%= l.created_at.strftime("%B %e, %Y - %l:%M%P") %></p>
+				<% if !l.next && l.created_at.to_date == Date.today %>
+					<div class="row" id="today">
+						<div class="col-sm-4 col-sm-offset-4 text-center">
+							<p class="text-muted">Today</p>
 						</div>
 					</div>
+				<% elsif l.next && l.next.created_at.to_date != l.created_at.to_date %>
+					<div class="row">
+						<div class="col-sm-4 col-sm-offset-4 text-center">
+							<p class="text-muted"><%= l.created_at.strftime("%B %e, %Y") %></p>
+						</div>
+					</div>
+				<% end %>
+				<div class="feed-item">
 					<div class="row">
 						<div class="col-sm-6">
+							<p class="text-muted"><%= l.created_at.strftime("%l:%M%P") %></p>
 							<p class="task-feed text-danger"><%= l.task %></p>
 						</div>
 						<div class="col-sm-6">
+							<p class="text-muted"><%= l.ended_at.strftime("%l:%M%P") %></p>
 							<p class="result-feed text-info"><%= l.result %></p>
 						</div>
 					</div>
+					<hr>
 				</div>
 			<% end %>
 		<% end %>
