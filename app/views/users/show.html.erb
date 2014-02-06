@@ -119,13 +119,14 @@ $(document).ready(function(){
 			createEndSessionForm();
 		}
 	} else if (<%= session[:state] == 4 %>){
+		$("#form-area").html('<h4 class="text-center text-info">Time for a break!</h4>');
 		if (<%=timeRemaining%> > 0){
 			var minutes = Math.floor(<%=timeRemaining%> / 60);
 			var seconds = <%=timeRemaining%> % 60;
 			$('#break-timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>', startBreakTimer(<%=timeRemaining%>));
 		} else {
 			$('#break-timer').html('<h1>00:00</h1>');
-			createEndSessionForm();
+			createStartWorkForm();
 		}
 	} 
 })
