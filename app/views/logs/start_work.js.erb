@@ -4,17 +4,23 @@ $("#counter").html('120');
 
 $("#form-area").html('<%= simple_form_for @log, remote: true do |f| %>\
 						  <%= f.input :task, label: "What\'s your task?"%>\
-						  <%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>\
+						  <%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right", id: "log-task-btn"  %>\
 			          <% end %>');
 
 $(document).ready(function(){
+	$('#log-task-btn').prop('disabled', true);
 	$('#log_task').bind('input',function(){
-		$('#counter').text(120-$(this).val().length);
-		if(parseInt($('#counter').text()) < 0){
-			$('#counter').css('color', 'red');
-		}
-		else{
+		var length = $(this).val().length;
+		$('#counter').text(120-length);
+		if (length==0){
+			$('#log-task-btn').prop('disabled', true);
 			$('#counter').css('color', 'black');
+		} else if (length > 0 && length<=120) {
+			$('#log-task-btn').removeAttr('disabled');
+			$('#counter').css('color', 'black');
+		} else {
+			$('#counter').css('color', 'red');
+			$('#log-task-btn').prop('disabled', true);
 		}
 	});
 })

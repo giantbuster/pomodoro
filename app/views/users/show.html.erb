@@ -9,7 +9,7 @@
 				<!-- Display "What's your task?" form -->
 				<%= simple_form_for @log, remote: true do |f| %>
 					<%= f.input :task, label: "What's your task?"%>
-					<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right" %>
+					<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right", id: "log-task-btn" %>
 				<% end %>
 			<% elsif session[:state] == 2 %>
 				<!-- Display work timer -->
@@ -32,7 +32,7 @@
 				<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>
 				<%= simple_form_for @log, remote:true, url: '/logs/update_result' do |f| %>
 					<%= f.input :result, label: "How did you do?"%>
-					<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>
+					<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right", id: "log-result-btn" %>
 				<% end %>
 			<% elsif session[:state] == 5 %>
 				<!-- Display break timer -->
@@ -95,23 +95,35 @@
 
 <script>
 $(document).ready(function(){
-	$('#log_result').bind('input',function(){
-		$('#counter').text(120-$(this).val().length);
-		if(parseInt($('#counter').text()) < 0){
-			$('#counter').css('color', 'red');
-		}
-		else{
+	$('#log-task-btn').prop('disabled', true);
+	$('#log_task').bind('input',function(){
+		var length = $(this).val().length;
+		$('#counter').text(120-length);
+		if (length==0){
+			$('#log-task-btn').prop('disabled', true);
 			$('#counter').css('color', 'black');
+		} else if (length > 0 && length<=120) {
+			$('#log-task-btn').removeAttr('disabled');
+			$('#counter').css('color', 'black');
+		} else {
+			$('#counter').css('color', 'red');
+			$('#log-task-btn').prop('disabled', true);
 		}
 	});
 
-	$('#log_task').bind('input',function(){
-		$('#counter').text(120-$(this).val().length);
-		if(parseInt($('#counter').text()) < 0){
-			$('#counter').css('color', 'red');
-		}
-		else{
+	$('#log-result-btn').prop('disabled', true);
+	$('#log_result').bind('input',function(){
+		var length = $(this).val().length;
+		$('#counter').text(120-length);
+		if (length==0){
+			$('#log-result-btn').prop('disabled', true);
 			$('#counter').css('color', 'black');
+		} else if (length > 0 && length<=120) {
+			$('#log-result-btn').removeAttr('disabled');
+			$('#counter').css('color', 'black');
+		} else {
+			$('#counter').css('color', 'red');
+			$('#log-result-btn').prop('disabled', true);
 		}
 	});
 })

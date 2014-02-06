@@ -4,18 +4,24 @@ $('#task-header').html('<h3 class="text-danger">Task : <%= current_user.logs.las
 // Display 'How did you do?' form
 $("#form-area").html('<%= simple_form_for @log, remote:true, url: logs_update_result_path, method: :post do |f| %>\
 		                  <%= f.input :result, label: "How did you do?"%>\
-		                  <%= f.button :submit, value: "Log results", class: "btn btn-info pull-right" %>\
+		                  <%= f.button :submit, value: "Log results", class: "btn btn-info pull-right", id: "log-result-btn"  %>\
 	                  <% end %>');
 $("#counter").html('120');
 
 $(document).ready(function(){
+	$('#log-result-btn').prop('disabled', true);
 	$('#log_result').bind('input',function(){
-		$('#counter').text(120-$(this).val().length);
-		if(parseInt($('#counter').text()) < 0){
-			$('#counter').css('color', 'red');
-		}
-		else{
+		var length = $(this).val().length;
+		$('#counter').text(120-length);
+		if (length==0){
+			$('#log-result-btn').prop('disabled', true);
 			$('#counter').css('color', 'black');
+		} else if (length > 0 && length<=120) {
+			$('#log-result-btn').removeAttr('disabled');
+			$('#counter').css('color', 'black');
+		} else {
+			$('#counter').css('color', 'red');
+			$('#log-result-btn').prop('disabled', true);
 		}
 	});
 })
