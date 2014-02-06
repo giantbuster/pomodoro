@@ -8,6 +8,7 @@ Pomodoro::Application.routes.draw do
   get "sessions/destroy"
   get "sessions/new"
   get "register" => "users#new"
+  get "login" => "sessions#new"
   post "login" => "sessions#create"
   get "signout" => "sessions#destroy", as: :signout 
   # The priority is based upon order of creation: first created -> highest priority.

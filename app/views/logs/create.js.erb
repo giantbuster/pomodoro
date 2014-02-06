@@ -6,10 +6,11 @@ $("#form-area").html('');
 $("#counter").html('');
 
 //Start work timer
-$('#work-timer').html('<h1>20:00</h1>', startWorkTimer());
+$('#work-timer').html('<h1>25:00</h1>', startWorkTimer());
 
 function startWorkTimer(){
-	var time = 5;
+	var time = 1500;
+	// var time = 2;
 	var timer = setInterval(function(){
 		time = decrement(time);
 		var minutes = Math.floor(time / 60);
@@ -31,7 +32,7 @@ function decrement(seconds){
 function createEndSessionForm(){	
 	$("#form-area").html('<h4 class="text-center text-info">Work time is over!</h4>\
 						  <%= simple_form_for @log, remote:true, url: logs_update_ended_at_path, method: :post do |f| %>\
-						      <div class="row">\
+						      <div class="row text-center">\
 						 	      <%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>\
 						  	  </div>\
 					      <% end %>');

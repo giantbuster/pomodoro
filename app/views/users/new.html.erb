@@ -3,19 +3,24 @@
 		<!-- User Registration Form -->
 		<div class="col-lg-6 col-lg-offset-3" style="margin-top: 10px;">
 			<%= simple_form_for @user, :html => {:class => 'form-horizontal'} do |f|%>
-				<%= f.input :display_name, label: "Your Display Name", my_wrapper_html: {class: 'col-lg-8'} %>
-				<%= f.input :email, label: "Email", my_wrapper_html: {class: 'col-lg-8'} %>
-				<%= f.input :password, label: "Password", my_wrapper_html: {class: 'col-lg-8'} %>
-				<%= f.input :password_confirmation, label: "Confirm Password", my_wrapper_html: {class: 'col-lg-8'} %>
+				<%= f.input :display_name, label: "Your Display Name", my_wrapper_html: {class: 'col-lg-8'}, placeholder: "Pommy" %>
+				<%= f.input :email, label: "Email", my_wrapper_html: {class: 'col-lg-8'}, placeholder: "your@email.com" %>
+				<%= f.input :password, label: "Password", my_wrapper_html: {class: 'col-lg-8'}, placeholder: "******" %>
+				<%= f.input :password_confirmation, label: "Confirm Password", my_wrapper_html: {class: 'col-lg-8'}, placeholder: "******" %>
 			<div class="form-group">
 				<div class="col-lg-offset-4 col-lg-8">
-				<%= f.submit "Register", :class => "btn btn-primary" %> 
+				<%= f.submit "Register", :class => "btn btn-success" %> 
 				</div>
 			</div>
 			<% end %>
+			<br>
+			<br>
+			<div>Already have an account?</div>
+			<div style="margin-top: 10px;">
+				<a class="btn btn-primary" href="/login">Login</a>
+			</div>	
 		</div>
 	</div>
 	<br>
 	<br>
 </div>
-

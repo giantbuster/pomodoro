@@ -3,8 +3,12 @@ $('#break-timer').html('');
 $("#counter").html('120');
 
 $("#form-area").html('<%= simple_form_for @log, remote: true do |f| %>\
-						  <%= f.input :task, label: "What\'s your task?"%>\
-						  <%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right", id: "log-task-btn"  %>\
+	  					<div class="row form-label">\
+							<h3>What\'s your task?</h3>\
+						</div>\
+						  <%= f.input :task, label: " " %>\
+						  <%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right", id: "log-task-btn" %>\
+						  <div class="row counter-area pull-right text-muted" id="counter">120</div>\
 			          <% end %>');
 
 $(document).ready(function(){
@@ -14,10 +18,10 @@ $(document).ready(function(){
 		$('#counter').text(120-length);
 		if (length==0){
 			$('#log-task-btn').prop('disabled', true);
-			$('#counter').css('color', 'black');
+			$('#counter').css('color', '#999999');
 		} else if (length > 0 && length<=120) {
 			$('#log-task-btn').removeAttr('disabled');
-			$('#counter').css('color', 'black');
+			$('#counter').css('color', '#999999');
 		} else {
 			$('#counter').css('color', 'red');
 			$('#log-task-btn').prop('disabled', true);

@@ -10,8 +10,12 @@
 			<% if session[:state] == 1 %>
 				<!-- Display "What's your task?" form -->
 				<%= simple_form_for @log, remote: true do |f| %>
-					<%= f.input :task, label: "What's your task?"%>
-					<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right", id: "log-task-btn" %>
+					<div class="row form-label">
+						<h3>What's your task?</h3>
+					</div>
+					<%= f.input :task, label: " " %>
+					<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right", id: "log-task-btn"%>
+					<div class="row counter-area pull-right text-muted" id="counter">120</div>
 				<% end %>
 			<% elsif session[:state] == 2 %>
 				<!-- Display work timer OR 'End session' button -->
@@ -19,10 +23,14 @@
 				<% timeRemaining = 1500 - (Time.now - current_user.logs.last.created_at).round %>
 			<% elsif session[:state] == 3 %>
 				<!-- Display 'How did you do?' form -->
-				<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>
+				<% task = current_user.logs.last.task %>
+				<div class="row text-center">
+					<p class="text-muted">Started at <%= current_user.logs.last.created_at.strftime("%l:%M%P") %>, ended at <%= current_user.logs.last.ended_at.strftime("%l:%M%P") %></p>
+				</div>
 				<%= simple_form_for @log, remote:true, url: '/logs/update_result' do |f| %>
 					<%= f.input :result, label: "How did you do?"%>
 					<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right", id: "log-result-btn" %>
+					<div class="row counter-area pull-right text-muted" id="counter">120</div>
 				<% end %>
 			<% elsif session[:state] == 4 %>
 				<!-- Display break timer OR 'Start work' button -->
@@ -30,11 +38,6 @@
 			<% end %>
 		</div>
 		<div class="clearfix"></div>
-		<div class="row text-center" id="counter">
-			<% if session[:state] == 1 || session[:state] == 3 %>
-				120
-			<% end %>
-		</div>
 	</div>
 	<div class="row text-center">
 			<h3><small>Activity</small></h3>
@@ -57,11 +60,11 @@
 				<% end %>
 				<div class="feed-item">
 					<div class="row">
-						<div class="col-sm-6">
+						<div class="col-sm-5 col-sm-offset-1">
 							<p class="text-muted"><%= l.created_at.strftime("%l:%M%P") %></p>
 							<p class="task-feed text-danger"><%= l.task %></p>
 						</div>
-						<div class="col-sm-6">
+						<div class="col-sm-5">
 							<p class="text-muted"><%= l.ended_at.strftime("%l:%M%P") %></p>
 							<p class="result-feed text-info"><%= l.result %></p>
 						</div>
@@ -72,7 +75,6 @@
 		<% end %>
 	</div>
 </div>
-
 <script>
 $(document).ready(function(){
 	$('#log-task-btn').prop('disabled', true);
@@ -81,10 +83,10 @@ $(document).ready(function(){
 		$('#counter').text(120-length);
 		if (length==0){
 			$('#log-task-btn').prop('disabled', true);
-			$('#counter').css('color', 'black');
+			$('#counter').css('color', '#999999');
 		} else if (length > 0 && length<=120) {
 			$('#log-task-btn').removeAttr('disabled');
-			$('#counter').css('color', 'black');
+			$('#counter').css('color', '#999999');
 		} else {
 			$('#counter').css('color', 'red');
 			$('#log-task-btn').prop('disabled', true);
@@ -97,10 +99,10 @@ $(document).ready(function(){
 		$('#counter').text(120-length);
 		if (length==0){
 			$('#log-result-btn').prop('disabled', true);
-			$('#counter').css('color', 'black');
+			$('#counter').css('color', '#999999');
 		} else if (length > 0 && length<=120) {
 			$('#log-result-btn').removeAttr('disabled');
-			$('#counter').css('color', 'black');
+			$('#counter').css('color', '#999999');
 		} else {
 			$('#counter').css('color', 'red');
 			$('#log-result-btn').prop('disabled', true);
@@ -128,6 +130,10 @@ $(document).ready(function(){
 			createStartWorkForm();
 		}
 	} 
+
+	if (<%= session[:state] == 3 %>){
+		$('#task-header').html('<h3 class="text-danger">Task : <%= task %></h3>')
+	}
 })
 
 function startWorkTimer(length){
@@ -167,13 +173,16 @@ function decrement(seconds){
 function createEndSessionForm(){
 	$("#form-area").html('<h4 class="text-center text-info">Work time is over!</h4>\
 						  <%= simple_form_for @log, remote:true, url: logs_update_ended_at_path, method: :post do |f| %>\
-						      <div class="row">\
+						      <div class="row text-center">\
 						 	      <%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>\
 						  	  </div>\
 					      <% end %>');
 }
 
 function createStartWorkForm(){
-	$("#form-area").html('<h4 class="text-center">Break time is over!</h4><%= button_to "Start work", logs_start_work_path, remote: true, class: "btn btn-danger col-sm-4 col-sm-offset-4" %>');
+	$("#form-area").html('<h4 class="text-center">Break time is over!</h4>\
+						<div class="row text-center">\
+							<%= button_to "Start work", logs_start_work_path, remote: true, class: "btn btn-danger col-sm-4 col-sm-offset-4" %>\
+						</div>');
 }
 </script>

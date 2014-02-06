@@ -18,11 +18,11 @@ if ($("#today").length == 0){
 
 $('#today').after('<div class="feed-item" style="display: none;">\
 						<div class="row">\
-							<div class="col-sm-6">\
+							<div class="col-sm-5 col-sm-offset-1">\
 								<p class="text-muted"><%= l.created_at.strftime("%l:%M%P") %></p>\
 								<p class="task-feed text-danger"><%= l.task %></p>\
 							</div>\
-							<div class="col-sm-6">\
+							<div class="col-sm-5">\
 								<p class="text-muted"><%= l.ended_at.strftime("%l:%M%P") %></p>\
 								<p class="result-feed text-info"><%= l.result %></p>\
 							</div>\
@@ -35,7 +35,8 @@ $('.feed-item').first().delay('125').slideDown('slow');
 $('#break-timer').html('<h1>5:00</h1>', startBreakTimer());
 
 function startBreakTimer(){
-	var time = 5;
+	var time = 300;
+	// var time = 2;
 	var timer = setInterval(function(){
 		time = decrement(time);
 		var minutes = Math.floor(time / 60);
@@ -54,5 +55,8 @@ function decrement(seconds){
 };
 
 function createStartWorkForm(){
-	$("#form-area").html('<h4 class="text-center">Break time is over!</h4><%= button_to "Start work", logs_start_work_path, remote: true, class: "btn btn-danger col-sm-4 col-sm-offset-4" %>');
+	$("#form-area").html('<h4 class="text-center">Break time is over!</h4>\
+						<div class="row text-center">\
+							<%= button_to "Start work", logs_start_work_path, remote: true, class: "btn btn-danger col-sm-4 col-sm-offset-4" %>\
+						</div>');
 }

@@ -34,11 +34,14 @@ img {
 // to make views framework-neutral
 main {
   @extend .container;
-  background-color: #eee;
+  background-color: #E8E8E8;
   padding-bottom: 80px;
   width: 100%;
   margin-top: 51px; // accommodate the navbar
   }
+hr{
+  border-color: #E8E8E8;
+}
 section {
   @extend .row;
   margin-top: 20px;
@@ -82,7 +85,8 @@ body {
   border-radius: 10px;
   height: 100%;
   display: inline-block;
-  padding: 15px 25px;
+  padding: 10px 20px;
+  text-align: left;
 }
 
 .result-feed{
@@ -90,7 +94,8 @@ body {
   border-radius: 10px;
   height: 100%;
   display: inline-block;
-  padding: 15px 25px;
+  padding: 10px 20px;
+  text-align: left;
 }
 
 .feed-item{
@@ -107,10 +112,39 @@ body {
 }
 
 .work-area{
-  margin-top: 90px;
-  height: 210px;
+  margin-top: 10px;
+  height: 270px;
+  margin-bottom: 15px;
+  background-color: #FCFCFC;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 4px 10px #CCC;
 }
 
 /*.highlight{
   background-color: #c0deff;
 }*/
+
+.counter-area{
+  margin-right: 12px;
+  margin-top: 7px;
+}
+
+#log-result-btn, #log-task-btn{
+  margin-right: 15px;
+}
+
+textarea{
+  resize: none;
+}
+
+.form-label{
+  padding-left: 30px;
+  margin-bottom: -20px;
+}
+
+.login-form{
+  background-color: white;
+  border-radius: 20px;
+  padding: 15px;
+}
