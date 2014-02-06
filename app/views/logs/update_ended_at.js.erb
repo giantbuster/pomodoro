@@ -1,5 +1,5 @@
 //On 'End Session' submit:
-$('#timer').html('');
+$('#work-timer').html('');
 $('#task-header').html('<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>');
 // Display 'How did you do?' form
 $("#form-area").html('<%= simple_form_for @log, remote:true, url: logs_update_result_path, method: :post do |f| %>\

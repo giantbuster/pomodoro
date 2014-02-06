@@ -6,7 +6,7 @@ $("#form-area").html('');
 $("#counter").html('');
 
 //Start work timer
-$('#timer').html('<h1>20:00</h1>', startWorkTimer());
+$('#work-timer').html('<h1>20:00</h1>', startWorkTimer());
 
 function startWorkTimer(){
 	var time = 5;
@@ -19,7 +19,7 @@ function startWorkTimer(){
 			clearInterval(timer);
 			createEndSessionForm();
 		}
-		$('#timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
+		$('#work-timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
 	}, 1000)
 }
 

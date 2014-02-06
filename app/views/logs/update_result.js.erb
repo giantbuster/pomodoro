@@ -32,7 +32,7 @@ $('#today').after('<div class="feed-item" style="display: none;">\
 
 $('.feed-item').first().delay('125').slideDown('slow');
 //Start break timer
-$('#timer').html('<h1>5:00</h1>', startBreakTimer());
+$('#break-timer').html('<h1>5:00</h1>', startBreakTimer());
 
 function startBreakTimer(){
 	var time = 5;
@@ -45,7 +45,7 @@ function startBreakTimer(){
 			clearInterval(timer);
 			createStartWorkForm();
 		}
-		$('#timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
+		$('#break-timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
 	}, 1000)
 }
 

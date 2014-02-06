@@ -3,7 +3,8 @@
 	<div class="work-area">
 		<p>Hello <%= @user.display_name %></p>
 		<div id="task-header"></div>
-		<div id="timer"></div>
+		<div id="work-timer"></div>
+		<div id="break-timer" class="text-muted"></div>
 
 		<div id="form-area">
 			<% if session[:state] == 1 %>
