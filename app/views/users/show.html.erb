@@ -1,8 +1,8 @@
 <% timeRemaining = 3 %>
 <div class="container">
+	<h4 class="text-muted">Hello <%= @user.display_name %></h4>
 	<div class="work-area">
-		<p>Hello <%= @user.display_name %></p>
-		<div id="task-header"></div>
+		<div id="task-header" class="text-center"></div>
 		<div id="work-timer"></div>
 		<div id="break-timer" class="text-muted"></div>
 
@@ -110,7 +110,6 @@ $(document).ready(function(){
 	if (<%= session[:state] == 2 %>){
 		$('#task-header').html('<h3 class="text-danger">Task : <%= task %></h3>')
 		if (<%=timeRemaining%> > 0){
-			console.log('less than 20 minutes ago')
 			var minutes = Math.floor(<%=timeRemaining%> / 60);
 			var seconds = <%=timeRemaining%> % 60;
 			$('#work-timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>', startWorkTimer(<%=timeRemaining%>));
