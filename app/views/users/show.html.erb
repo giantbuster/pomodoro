@@ -1,3 +1,4 @@
+<% timeRemaining = 3 %>
 <div class="container">
 	<div class="work-area">
 		<p>Hello <%= @user.display_name %></p>
@@ -12,46 +13,24 @@
 					<%= f.button :submit, value: "Start Pomodoro", class: "btn btn-danger pull-right", id: "log-task-btn" %>
 				<% end %>
 			<% elsif session[:state] == 2 %>
-				<!-- Display work timer -->
-				<p>We're in session state 2</p>
-				<% if current_user.logs.last.ended_at.nil? %>
-					<p>Timer has not been ended. On refresh, the 'End work' button will appear.</p>
-					<% session[:state] = 3 %>
-				<% end %>
+				<!-- Display work timer OR 'End session' button -->
+				<% task = current_user.logs.last.task %>
+				<% timeRemaining = 1200 - (Time.now - current_user.logs.last.created_at).round %>
 			<% elsif session[:state] == 3 %>
-				<!-- Display button to end work session -->
-				<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>
-				<h4 class="text-center text-info">Work time is over!</h4>
-				<%= simple_form_for @log, remote:true, url: '/logs/update_ended_at' do |f| %>
-					<div class="row">
-						<%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>
-					</div>
-				<% end %>
-			<% elsif session[:state] == 4 %>
 				<!-- Display 'How did you do?' form -->
 				<h3 class="text-danger">Task : <%= current_user.logs.last.task %></h3>
 				<%= simple_form_for @log, remote:true, url: '/logs/update_result' do |f| %>
 					<%= f.input :result, label: "How did you do?"%>
 					<%= f.button :submit, value: "Log results", class: "btn btn-info pull-right", id: "log-result-btn" %>
 				<% end %>
-			<% elsif session[:state] == 5 %>
-				<!-- Display break timer -->
-				<p>We're in session state 5</p>
-				<p>On refresh, the 'Start work' button will appear.</p>
-				<% session[:state] = 6 %>
-			<% elsif session[:state] == 6 %>
-				<!-- Display "Start work" button -->
-				<%= simple_form_for @log, remote:true, url: '/logs/start_work' do |f| %>
-					<h4 class="text-center">Break time is over!</h4>
-					<div class="row">
-						<%= f.button :submit, value: "Start work", class: "btn btn-danger col-sm-4 col-sm-offset-4" %>
-					</div>
-				<% end %>
+			<% elsif session[:state] == 4 %>
+				<!-- Display break timer OR 'Start work' button -->
+				<% timeRemaining = 600 - (Time.now - current_user.logs.last.updated_at).round %>
 			<% end %>
 		</div>
 		<div class="clearfix"></div>
 		<div class="row text-center" id="counter">
-			<% if session[:state] == 1 || session[:state] == 4 %>
+			<% if session[:state] == 1 || session[:state] == 3 %>
 				120
 			<% end %>
 		</div>
@@ -126,5 +105,74 @@ $(document).ready(function(){
 			$('#log-result-btn').prop('disabled', true);
 		}
 	});
+
+	if (<%= session[:state] == 2 %>){
+		$('#task-header').html('<h3 class="text-danger">Task : <%= task %></h3>')
+		if (<%=timeRemaining%> > 0){
+			console.log('less than 20 minutes ago')
+			var minutes = Math.floor(<%=timeRemaining%> / 60);
+			var seconds = <%=timeRemaining%> % 60;
+			$('#work-timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>', startWorkTimer(<%=timeRemaining%>));
+		} else {
+			$('#work-timer').html('<h1>00:00</h1>');
+			createEndSessionForm();
+		}
+	} else if (<%= session[:state] == 4 %>){
+		if (<%=timeRemaining%> > 0){
+			var minutes = Math.floor(<%=timeRemaining%> / 60);
+			var seconds = <%=timeRemaining%> % 60;
+			$('#break-timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>', startBreakTimer(<%=timeRemaining%>));
+		} else {
+			$('#break-timer').html('<h1>00:00</h1>');
+			createEndSessionForm();
+		}
+	} 
 })
+
+function startWorkTimer(length){
+	var time = length;
+	var timer = setInterval(function(){
+		time = decrement(time);
+		var minutes = Math.floor(time / 60);
+		var seconds = time % 60;
+		if(time == 0)
+		{
+			clearInterval(timer);
+			createEndSessionForm();
+		}
+		$('#work-timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
+	}, 1000)
+}
+
+function startBreakTimer(length){
+	var time = length;
+	var timer = setInterval(function(){
+		time = decrement(time);
+		var minutes = Math.floor(time / 60);
+		var seconds = time % 60;
+		if(time == 0)
+		{
+			clearInterval(timer);
+			createStartWorkForm();
+		}
+		$('#break-timer').html('<h1>'+(minutes.toString().length < 2 ? '0' + minutes : minutes) + ':' + (seconds.toString().length < 2 ? '0' + seconds : seconds)+'</h1>');
+	}, 1000)
+}
+
+function decrement(seconds){
+	return seconds - 1;
+};
+
+function createEndSessionForm(){
+	$("#form-area").html('<h4 class="text-center text-info">Work time is over!</h4>\
+						  <%= simple_form_for @log, remote:true, url: logs_update_ended_at_path, method: :post do |f| %>\
+						      <div class="row">\
+						 	      <%= f.button :submit, value: "End session", class: "btn btn-info col-sm-4 col-sm-offset-4" %>\
+						  	  </div>\
+					      <% end %>');
+}
+
+function createStartWorkForm(){
+	$("#form-area").html('<h4 class="text-center">Break time is over!</h4><%= button_to "Start work", logs_start_work_path, remote: true, class: "btn btn-danger col-sm-4 col-sm-offset-4" %>');
+}
 </script>

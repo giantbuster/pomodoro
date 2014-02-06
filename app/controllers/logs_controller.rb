@@ -16,21 +16,19 @@ class LogsController < ApplicationController
 	end
 
 	# State 2
-	# Display work timer
-
-	# State 3
+	# Display work timer, show 'end session button'
 	# Process 'end session' button
 	def update_ended_at
 		@log = current_user.logs.last
 		@log.update(ended_at: Time.now)
-		session[:state] = 4
+		session[:state] = 3
 		respond_to do |format|
 			format.html { redirect_to :back }
 	        format.js
 		end
 	end
 
-	# State 4
+	# State 3
 	# Process 'Log results' form
 	def update_result
 		if log_update_result_params[:result].length==0 || log_update_result_params[:result].length>120
@@ -39,7 +37,7 @@ class LogsController < ApplicationController
 			end
 		else
 			@log = current_user.logs.last.update(log_update_result_params)
-			session[:state] = 5
+			session[:state] = 4
 			respond_to do |format|
 				format.html { redirect_to :back }
 		        format.js
@@ -47,11 +45,9 @@ class LogsController < ApplicationController
 		end
 	end
 
-	# State 5
-	# Display break timer
-
-	# State 6
-	# Process 'Log results' form
+	# State 4
+	# Display break timer, display 'start work' button
+	# Process 'Start work' button
 	def start_work
 		session[:state] = 1
 		@log = Log.new
