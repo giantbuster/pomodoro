@@ -17,9 +17,13 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
-    @log = Log.new
-    @logs = current_user.logs.order("created_at DESC").where("result IS NOT NULL").all
+    if !signed_in?
+      redirect_to login_path
+    else 
+      @user = User.find(params[:id])
+      @log = Log.new
+      @logs = current_user.logs.order("created_at DESC").where("result IS NOT NULL").all
+    end
   end
 
   def update

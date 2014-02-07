@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
   def new
+    redirect_to user_path(session[:user_id]) if signed_in?
   	@user = User.new
   end
 
