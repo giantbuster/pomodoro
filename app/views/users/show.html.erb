@@ -51,7 +51,7 @@
 							<p class="text-muted">Today</p>
 						</div>
 					</div>
-				<% elsif l.next && l.next.created_at.to_date != l.created_at.to_date %>
+				<% elsif (l.next && l.next.created_at.to_date != l.created_at.to_date) || !l.next %>
 					<div class="row">
 						<div class="col-sm-4 col-sm-offset-4 text-center">
 							<p class="text-muted"><%= l.created_at.strftime("%B %e, %Y") %></p>
