@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20140203214127) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "logs", force: true do |t|
     t.string   "task"
     t.string   "result"
@@ -22,7 +25,7 @@ ActiveRecord::Schema.define(version: 20140203214127) do
     t.datetime "updated_at"
   end
 
-  add_index "logs", ["user_id"], name: "index_logs_on_user_id"
+  add_index "logs", ["user_id"], name: "index_logs_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "display_name"
