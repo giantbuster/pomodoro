@@ -9,6 +9,9 @@ gem 'rails', '4.0.2'
 # Using postgres for heroku
 gem 'pg'
 
+# Including this to satisfy Heroku
+gem 'rails_12factor'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 
