@@ -52,3 +52,7 @@ gem 'rails-footnotes'
 group :development do
 	gem 'rails_layout'
 end
+
+group :development, :test do
+  gem 'sqlite3'
+end
